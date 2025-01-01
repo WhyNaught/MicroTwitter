@@ -1,0 +1,1 @@
+MicroTweets is a microservice-based application that functions in a similar manner to Twitter (now known as X). 
