@@ -4,7 +4,8 @@ import psycopg2
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required 
+import jwt as pyjwt 
+import datetime
 
 load_dotenv()
 
@@ -13,8 +14,7 @@ url = os.getenv('DB_URL')
 connection = psycopg2.connect(url)
 bcrypt = Bcrypt(app) 
 
-app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
-app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 app.config["JWT_TOKEN_LOCATION"] = ['headers']
 
 @app.route('/register', methods = ['POST'])
@@ -47,8 +47,13 @@ def login():
                 user = cursor.fetchone()
             if user:
                 if bcrypt.check_password_hash(user[3], password_guess):
-                    #return jwt, but for now just a status code 
-                    return jsonify({"message" : "logged in succesfully!"}), 200
+                    payload = {
+                        "email" : email,
+                        "user_id" : user[0], 
+                        "exp" : datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+                    }
+                    token = pyjwt.encode(payload, SECRET_KEY)
+                    return jsonify({"message" : "logged in succesfully!", "token" : token}), 200
                 else: 
                     return jsonify({"message" : "incorrect email or password"}), 400    
             else:
