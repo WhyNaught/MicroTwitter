@@ -62,6 +62,5 @@ def login():
         return {"error": str(e)}, 500
     
 # this microservice is currently running on port 5000
-# "python3 app.py"
 if __name__ == '__main__':
     app.run(debug=True)
