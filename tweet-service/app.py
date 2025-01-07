@@ -23,7 +23,7 @@ def post_tweet(id):
     except Exception as e: 
         return {'error' : str(e)}, 500
     
-@app.route('/tweet/getall/<id>')
+@app.route('/tweet/getall/<id>', methods = ['GET'])
 def get_all(id):
     try:
         with connection:
@@ -35,6 +35,32 @@ def get_all(id):
                 return jsonify({"message" : "posts retrieved successfully!", "posts" : posts}), 200 
     except Exception as e:      
         return {"error" : str(e)}, 500
+    
+@app.route('/tweet/getone/<tweetid>', methods = ['GET'])
+def get_one(tweetid):
+    try:
+        with connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM posts WHERE id = %s', (tweetid))
+                post = cursor.fetchone()
+                if not post: 
+                    return jsonify({"message" : "no such post with this id exists"}), 404
+                return jsonify({"post" : post}), 200
+    except Exception as e:
+        return {"error" : str(e)}, 500
+
+@app.route('/tweet/deleteone/<tweetid>', methods = ['DELETE'])
+def deleteone(tweetid):
+    try:
+        # protect this route to make sure that it is only the author deleting them 
+        with connection:
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM posts WHERE id = %s', (tweetid))
+                return jsonify({"message" : "post deleted succesfully!"}), 200
+    except Exception as e:
+        return {"error" : str(e)}, 500
+
+# no need for a put/patch route as twitter does not allow editing of posts
     
 if __name__ == '__main__':
     app.run(debug=True)
