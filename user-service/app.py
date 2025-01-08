@@ -14,7 +14,7 @@ url = os.getenv('DB_URL')
 connection = psycopg2.connect(url)
 bcrypt = Bcrypt(app) 
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+secret_key = os.getenv('SECRET_KEY')
 app.config["JWT_TOKEN_LOCATION"] = ['headers']
 
 @app.route('/register', methods = ['POST'])
@@ -49,10 +49,10 @@ def login():
                 if bcrypt.check_password_hash(user[3], password_guess):
                     payload = {
                         "email" : email,
-                        "user_id" : user[0], 
+                        "id" : user[0], 
                         "exp" : datetime.datetime.utcnow() + datetime.timedelta(hours=1)
                     }
-                    token = pyjwt.encode(payload, SECRET_KEY)
+                    token = pyjwt.encode(payload, secret_key)
                     return jsonify({"message" : "logged in succesfully!", "token" : token}), 200
                 else: 
                     return jsonify({"message" : "incorrect email or password"}), 400    

@@ -3,13 +3,39 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import psycopg2
 import datetime
+import jwt as pyjwt 
+from functools import wraps 
 
 app = Flask(__name__)
 load_dotenv()
 db_url = os.getenv('DB_URL')
+secret_key = os.getenv('SECRET_KEY')
 connection = psycopg2.connect(db_url)
 
+# custom implementation of flask-jwt-extended's token verification method using decorators
+def token_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            parts = auth_header.split(' ')
+            if len(parts) == 2 and parts[0] == 'Bearer':
+                token = parts[1]
+        if not token:
+            return jsonify({"error": "No token found"}), 401
+        try:
+            data = pyjwt.decode(token, secret_key, algorithms=["HS256"])
+            request.user = data
+        except pyjwt.ExpiredSignatureError:
+            return jsonify({"error": "Token has expired"}), 401
+        except pyjwt.InvalidTokenError:
+            return jsonify({"error": "Token is invalid"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/tweet/post/<id>', methods = ['POST'])
+@token_required
 def post_tweet(id):
     data = request.get_json()
     title = data['title']
@@ -50,11 +76,21 @@ def get_one(tweetid):
         return {"error" : str(e)}, 500
 
 @app.route('/tweet/deleteone/<tweetid>', methods = ['DELETE'])
+@token_required
 def deleteone(tweetid):
     try:
-        # protect this route to make sure that it is only the author deleting them 
+        user_id = request.user['user_id']
         with connection:
             with connection.cursor() as cursor:
+                cursor.execute('SELECT author_id FROM posts WHERE id = %s', (tweetid))
+                post = cursor.fetchone()
+                if not post:
+                    return jsonify({"error" : "no post with this id was found"}), 404
+                author_id = post[1]
+
+                if author_id != user_id:
+                    return jsonify({"error" : "not authorized"}), 401
+                
                 cursor.execute('DELETE FROM posts WHERE id = %s', (tweetid))
                 return jsonify({"message" : "post deleted succesfully!"}), 200
     except Exception as e:
@@ -63,4 +99,4 @@ def deleteone(tweetid):
 # no need for a put/patch route as twitter does not allow editing of posts
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
