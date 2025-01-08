@@ -12,6 +12,7 @@ router.post('/social/follow/:userid', (req, res, next) => {
     if (!token) {
         return res.status(401).json({"error" : "unauthorized"}); 
     };
+
     try {
         const decoded = jwt.verify(token, process.env.SECRET_KEY); 
         const followerid = decoded['id']; 
@@ -23,5 +24,26 @@ router.post('/social/follow/:userid', (req, res, next) => {
         next(); 
     }
 });
+
+router.delete('social/unfollow/:userid', (req, res, next) => {
+    const {userid} = req.params;
+    const authheader = req.headers['authorization']; 
+    const token = authheader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({"error" : "unauthorized"});
+    };
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY); 
+        const followerid = decoded['id']; 
+        db.query('DELETE FROM followers WHERE follower_id = $1 AND user_id = $2', [followerid, userid]); 
+        return res.status(201).json({"message" : "Unfollowed sucessfully!"}); 
+    } catch (err) {
+        return res.status(500).json({"error" : err}); 
+    } finally {
+        next(); 
+    }
+}); 
 
 module.exports = router; 
