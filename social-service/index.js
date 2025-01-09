@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors'); 
 const app = express(); 
 const follow = require('./controller/follow'); 
+const like = require('./controller/like'); 
 require('dotenv').config(); 
 
 app.use(cors()); 
@@ -12,3 +13,4 @@ app.listen(port, () => {
 });
 
 app.use(follow); 
+app.use(like); 
