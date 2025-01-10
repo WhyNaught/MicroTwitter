@@ -5,6 +5,18 @@ const db = require('../db');
 const extractToken = require('./extractToken');  
 require('dotenv').config(); 
 
+router.get('/social/checkfollow/:userid', (req, res) => {
+    const {userid} = req.params; 
+    const decoded = extractToken(req); 
+    const followerid = decoded['id']; 
+    try {
+        const result = db.query('SELECT * FROM followers WHERE user_id = $1 AND follower_id = $2', [userid, followerid]); 
+        return res.status(200).json({"followStatus" : (result !== undefined)}); 
+    } catch (err) {
+        return res.status(500).json({"error" : err}); 
+    }
+}); 
+
 router.post('/social/follow/:userid', (req, res, next) => {
     const {userid} = req.params;
     const decoded = extractToken(req);
