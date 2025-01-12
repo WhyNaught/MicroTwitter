@@ -32,8 +32,12 @@ CREATE TABLE posts(
     likes INT NOT NULL DEFAULT 0, 
     comment_count INT NOT NULL DEFAULT 0, 
     post_date varchar(255) NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE, 
 );
+
+ALTER TABLE posts ADD COLUMN search_vector tsvector;
+UPDATE posts SET search_vector = to_tsvector('english', title || ' ' || body);
+CREATE INDEX posts_search_vector_idx ON posts USING gin(search_vector);
 
 CREATE TABLE comments(
     id SERIAL NOT NULL PRIMARY KEY, 
