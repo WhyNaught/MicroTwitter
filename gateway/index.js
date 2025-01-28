@@ -1,9 +1,15 @@
 const express = require('express');
-const expressJwt = require('express-jwt').expressjwt;  
+const jwt = require('jwt'); 
 const cors = require('cors'); 
 require('dotenv').config(); 
 
 const app = express(); 
+
+const user_service_url = ''; 
+const search_service_url = ''; 
+const tweet_service_url = ''; 
+const comment_service_url = ''; 
+const reply_service_url = ''; 
 
 app.use(cors()); 
 

@@ -8,6 +8,10 @@ CREATE TABLE users(
     follower_count INT NOT NULL DEFAULT 0
 );  
 
+ALTER TABLE users ADD COLUMN search_vector tsvector;
+UPDATE users SET search_vector = to_tsvector('english', username || ' ' || first_name || ' ' ||last_name);
+CREATE INDEX users_search_vector_idx ON users USING gin(search_vector);
+
 CREATE TABLE followers(
     user_id INT NOT NULL, 
     follower_id INT NOT NULL, 
@@ -29,6 +33,16 @@ CREATE TABLE posts(
     author_id INT NOT NULL, 
     title varchar(50) NOT NULL, 
     body varchar(255),
+    likes INT NOT NULL DEFAULT 0, 
+    comment_count INT NOT NULL DEFAULT 0, 
+    post_date varchar(255) NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE, 
+);
+
+CREATE TABLE retweets(
+    id SERIAL NOT NULL PRIMARY KEY,
+    original_author_id INT NOT NULL,
+    retweeter_id INT NOT NULL, 
     likes INT NOT NULL DEFAULT 0, 
     comment_count INT NOT NULL DEFAULT 0, 
     post_date varchar(255) NOT NULL,
