@@ -7,5 +7,5 @@ import com.example.api.model.Tweet;
 
 @Repository
 public interface tweetRepo extends JpaRepository<Tweet, Integer> {
-    // add custom methods where needed 
+    
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="tweets")
+@Table(name="posts")
 public class Tweet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -35,6 +35,10 @@ public class Tweet {
     
     @Column(name="post_date")
     private LocalDateTime post_date; 
+
+    public Tweet() {
+        
+    }
     
     public Tweet(int id, int author_id, String title, String body, int likes, int comment_count, LocalDateTime post_date) {
         this.id = id; 

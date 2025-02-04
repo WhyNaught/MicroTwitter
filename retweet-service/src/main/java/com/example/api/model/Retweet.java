@@ -16,7 +16,7 @@ import lombok.Data;
 public class Retweet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id; 
+    private Integer id; 
 
     @Column(name="author_id")
     private int author_id; 
@@ -42,7 +42,7 @@ public class Retweet {
     @Column(name="post_date", nullable = false)
     private LocalDateTime post_date; 
 
-    public Retweet(int id, int author_id, int post_id, String title, String body, int retweeter_id, int likes, int comment_count, LocalDateTime post_date) {
+    public Retweet(Integer id, int author_id, int post_id, String title, String body, int retweeter_id, int likes, int comment_count, LocalDateTime post_date) {
         this.id = id; 
         this.author_id = author_id; 
         this.post_id = post_id; 
@@ -54,7 +54,7 @@ public class Retweet {
         this.post_date = post_date; 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id; 
     }
     public int getPost_id() {
