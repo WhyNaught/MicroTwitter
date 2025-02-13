@@ -30,4 +30,9 @@ public class RetweetService {
         retweetRepo.save(newRetweet); 
         return new ResponseEntity<>("Retweeted Succesfully!", HttpStatus.CREATED); 
     }
+
+    public ResponseEntity<String> updateRetweetLikeCount(Integer retweet_id, int userId) {
+        
+        return new ResponseEntity<>("Liked retweet succesfully!", HttpStatus.CREATED); 
+    }
 }
