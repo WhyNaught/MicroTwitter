@@ -1,19 +1,37 @@
-const express = require('express');
-const jwt = require('jwt'); 
-const cors = require('cors'); 
-require('dotenv').config(); 
+const express = require("express");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+require("dotenv").config();
 
-const app = express(); 
+const app = express();
+const PORT = process.env.DEV_PORT;
 
-const user_service_url = ''; 
-const search_service_url = ''; 
-const tweet_service_url = ''; 
-const comment_service_url = ''; 
-const reply_service_url = ''; 
+app.use((req, res, next) => {
+    console.log(`[Gateway] ${req.method} ${req.originalUrl}`);
+    next();
+});
 
-app.use(cors()); 
+const services = {
+    "/users" : "http://localhost:5000", // user-service 
+    "/tweets" : "http://localhost:5001", // tweet-service
+    "/social" : "http://localhost:5002", // social-service
+    "/search" : "http://localhost:5003", // search-service
+    "/retweets" : "http://localhost:8080" // retweet-service
+};
 
-const port = process.env.DEV_PORT; 
-app.listen(port, 'localhost', () => {
-    console.log('API gateway started on port ' + port); 
+Object.keys(services).forEach((path) => {
+    app.use(
+        path,
+        createProxyMiddleware({
+            target: services[path],
+            changeOrigin: true,
+        })
+    );
+  });
+  
+app.get("/", (req, res) => {
+    res.send("API Gateway is running");
+});
+  
+app.listen(PORT, () => {
+    console.log(`API Gateway running on http://localhost:${PORT}`);
 });
