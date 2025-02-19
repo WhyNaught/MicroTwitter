@@ -25,7 +25,7 @@ public class RetweetService {
     private retweetLikeRepo retweetLikeRepo; 
 
     public ResponseEntity<String> retweet(int original_post_id, int retweeter_id) {
-        if (tweetRepo.getByAuthorIdAndPostId(original_post_id, retweeter_id) != null) {
+        if (retweetRepo.getByAuthorIdAndPostId(original_post_id, retweeter_id) != null) {
             return new ResponseEntity<>("You have already retweeted this post!", HttpStatus.BAD_REQUEST); 
         }
         Tweet originalTweet = tweetRepo.findById(original_post_id).get();  
@@ -43,7 +43,7 @@ public class RetweetService {
             retweetRepo.deleteById(result.getId());
             return new ResponseEntity<>("Deleted retweet succesfully!", HttpStatus.OK); 
         }
-        
+        // remember to clear all the likes as well 
     }
 
     public boolean checkRetweetLikeRepo(int retweetId, int userId) {

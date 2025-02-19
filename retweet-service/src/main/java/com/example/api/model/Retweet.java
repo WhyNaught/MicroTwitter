@@ -54,6 +54,8 @@ public class Retweet {
         this.post_date = post_date; 
     }
 
+    public Retweet() {}
+
     public Integer getId() {
         return id; 
     }

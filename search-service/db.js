@@ -4,7 +4,7 @@ require('dotenv').config()
 const pool = new Pool({
     username: "postgres", 
     password: process.env.DB_PWD, 
-    host: 'localhost', 
+    host: 'postgresql-service', 
     port: 5432, 
     database: 'microtweets'
 }); 

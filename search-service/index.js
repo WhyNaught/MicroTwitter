@@ -8,7 +8,7 @@ app.use(cors());
 
 const port = 5003; 
 
-app.listen(port, () => {
+app.listen('0.0.0.0', port, () => {
     console.log('Search service started on port 5003'); 
 }); 
 

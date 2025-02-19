@@ -8,6 +8,6 @@ import com.example.api.model.Tweet;
 
 @Repository
 public interface tweetRepo extends JpaRepository<Tweet, Integer> {
-    @Query(value="SELECT * FROM posts WHERE post_id = ?1 AND retweeter_id = ?2", nativeQuery = true)
-    public Tweet getByAuthorIdAndPostId(int original_post_id, int retweeter_id); 
+    @Query(value="SELECT * FROM posts WHERE id = ?1 AND author_id = ?2", nativeQuery = true)
+    public Tweet getByAuthorIdAndPostId(int id, int author_id); 
 }

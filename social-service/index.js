@@ -8,7 +8,7 @@ require('dotenv').config();
 app.use(cors()); 
 
 const port = 5002; 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log("Social Graph started on port " + port); 
 });
 

@@ -24,6 +24,11 @@ public class RetweetController {
         return RetweetService.retweet(postId, userId); 
     }
 
+    @DeleteMapping("/retweet/delete")
+    public ResponseEntity<String> DeleteRetweet(@RequestParam("postid") int postId, @RequestParam("userid") int userId) {
+        return RetweetService.deleteRetweet(postId, userId); 
+    }
+
     @PostMapping("/retweet/like")
     public ResponseEntity<String> LikeRetweet(@RequestParam("retweetid") int retweetId, @RequestParam("userid") int userId) {
         return RetweetService.like(retweetId, userId); 

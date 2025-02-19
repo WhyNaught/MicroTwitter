@@ -28,6 +28,14 @@ CREATE TABLE likes(
     FOREIGN KEY (liker_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE retweetLikes(
+    liker_id INT NOT NULL, 
+    retweet_id INT NOT NULL, 
+    PRIMARY KEY (retweet_id, liker_id), 
+    FOREIGN KEY (retweet_id) REFERENCES retweets(id) ON DELETE CASCADE, 
+    FOREIGN KEY (liker_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE posts(
     id SERIAL NOT NULL PRIMARY KEY,
     author_id INT NOT NULL, 
@@ -41,12 +49,17 @@ CREATE TABLE posts(
 
 CREATE TABLE retweets(
     id SERIAL NOT NULL PRIMARY KEY,
-    original_author_id INT NOT NULL,
+    author_id INT NOT NULL,
+    post_id INT NOT NULL, 
+    title varchar(50) NOT NULL, 
+    body varchar(255), 
     retweeter_id INT NOT NULL, 
     likes INT NOT NULL DEFAULT 0, 
     comment_count INT NOT NULL DEFAULT 0, 
     post_date varchar(255) NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE, 
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (retweeter_id) REFERENCES users(id) ON DELETE CASCADE, 
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE 
 );
 
 ALTER TABLE posts ADD COLUMN search_vector tsvector;

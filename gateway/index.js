@@ -3,7 +3,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.DEV_PORT;
+const PORT = process.env.DEV_PORT || 117;
 
 app.use((req, res, next) => {
     console.log(`[Gateway] ${req.method} ${req.originalUrl}`);
@@ -11,11 +11,11 @@ app.use((req, res, next) => {
 });
 
 const services = {
-    "/users" : "http://localhost:5000", // user-service 
-    "/tweets" : "http://localhost:5001", // tweet-service
-    "/social" : "http://localhost:5002", // social-service
-    "/search" : "http://localhost:5003", // search-service
-    "/retweets" : "http://localhost:8080" // retweet-service
+    "/users" : "http://user-service:5000", // user-service 
+    "/tweets" : "http://tweet-service:5001", // tweet-service
+    "/social" : "http://social-service:5002", // social-service
+    "/search" : "http://search-service:5003", // search-service
+    "/retweets" : "http://retweet-service:8080" // retweet-service
 };
 
 Object.keys(services).forEach((path) => {
@@ -32,6 +32,6 @@ app.get("/", (req, res) => {
     res.send("API Gateway is running");
 });
   
-app.listen(PORT, () => {
-    console.log(`API Gateway running on http://localhost:${PORT}`);
+app.listen('0.0.0.0', PORT, () => {
+    console.log(`API Gateway running on port ${PORT}`);
 });
