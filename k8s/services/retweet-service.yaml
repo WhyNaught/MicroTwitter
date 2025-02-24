@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: retweet-service
+spec:
+  selector:
+    app: retweet  # Match this with the label in the user-service pod
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

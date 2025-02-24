@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: social-service
+spec:
+  selector:
+    app: social  # Match this with the label in the user-service pod
+  ports:
+    - protocol: TCP
+      port: 5002
+      targetPort: 5002

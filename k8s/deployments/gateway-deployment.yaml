@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: gateway:latest 
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 117
+          env:
+            - name: DEV_PORT
+              value: "117"
+            - name: USER_SERVICE_URL
+              value: "http://user-service:5000"
+            - name: TWEET_SERVICE_URL
+              value: "http://tweet-service:5001"
+            - name: SOCIAL_SERVICE_URL
+              value: "http://social-service:5002"
+            - name: SEARCH_SERVICE_URL
+              value: "http://search-service:5003"
+            - name: RETWEET_SERVICE_URL
+              value: "http://retweet-service:8080"
+            - name: DB_URL
+              value: "http://postgresql-service:5432"

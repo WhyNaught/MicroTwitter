@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tweet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tweet
+  template:
+    metadata:
+      labels:
+        app: tweet
+    spec:
+      containers:
+        - name: tweet
+          image: tweet:latest  
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5001 
+          env:
+            - name: DB_URL
+              value: "postgresql://postgres:KingOreo2019@postgresql-service:5432/microtweets"  
+            - name: SECRET_KEY
+              value: "4%69$321ghksagjweiAgnwengb$%&127AB4"  
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: POSTGRES_PASSWORD

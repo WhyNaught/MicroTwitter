@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retweet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retweet
+  template:
+    metadata:
+      labels:
+        app: retweet
+    spec:
+      containers:
+        - name: retweet
+          image: retweet:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080 
+          env:
+            - name: DB_URL
+              value: "postgresql://postgres:KingOreo2019@postgresql-service:5432/microtweets"  
+            - name: SECRET_KEY
+              value: "4%69$321ghksagjweiAgnwengb$%&127AB4"  
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: POSTGRES_PASSWORD
+            - name: SERVER_ADDRESS
+              value: "0.0.0.0"  
+            - name: SERVER_PORT
+              value: "8080"
